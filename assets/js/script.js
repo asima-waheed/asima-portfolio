@@ -1,5 +1,8 @@
 'use strict';
 
+// Enable progressive enhancement styles
+document.documentElement.classList.add("js");
+
 
 
 /**
@@ -21,6 +24,7 @@ const addEventOnElements = function (elements, eventType, callback) {
 const navbar = document.querySelector("[data-navbar]");
 const navTogglers = document.querySelectorAll("[data-nav-toggler]");
 const overlay = document.querySelector("[data-overlay]");
+const navLinks = document.querySelectorAll(".navbar-link");
 
 const toggleNavbar = function () {
   navbar.classList.toggle("active");
@@ -29,6 +33,14 @@ const toggleNavbar = function () {
 }
 
 addEventOnElements(navTogglers, "click", toggleNavbar);
+
+/**
+ * close navbar when a nav link is clicked (mobile)
+ */
+
+addEventOnElements(navLinks, "click", function () {
+  if (navbar.classList.contains("active")) toggleNavbar();
+});
 
 
 
@@ -70,3 +82,45 @@ for (let i = 0, len = revealDelayElements.length; i < len; i++) {
 
 window.addEventListener("scroll", reveal);
 window.addEventListener("load", reveal);
+
+
+
+/**
+ * DARK MODE TOGGLE
+ */
+
+const themeToggleBtn = document.querySelector("[data-theme-toggler]");
+const html = document.documentElement;
+
+// Get theme from localStorage or default to light
+const getTheme = () => {
+  const savedTheme = localStorage.getItem("theme");
+  return savedTheme || "light";
+};
+
+// Set theme
+const setTheme = (theme) => {
+  html.setAttribute("data-theme", theme);
+  localStorage.setItem("theme", theme);
+};
+
+// Initialize theme on page load
+const initTheme = () => {
+  const currentTheme = getTheme();
+  setTheme(currentTheme);
+};
+
+// Toggle theme
+const toggleTheme = () => {
+  const currentTheme = html.getAttribute("data-theme");
+  const newTheme = currentTheme === "dark" ? "light" : "dark";
+  setTheme(newTheme);
+};
+
+// Initialize theme when page loads
+initTheme();
+
+// Add click event to theme toggle button
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener("click", toggleTheme);
+}
